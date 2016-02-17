@@ -10,16 +10,10 @@ app = Flask(__name__)
 def slack_log(name, request):
     print('slack_log {}: {}'.format(name, request))
     message = {}
-    message['token'] = request.form['token']
-    message['team_id'] = request.form['team_id']
-    message['team_domain'] = request.form['team_domain']
-    message['channel_id'] = request.form['channel_id']
-    message['channel_name'] = request.form['channel_name']
-    message['timestamp'] = request.form['timestamp']
-    message['user_id'] = request.form['user_id']
-    message['user_name'] = request.form['user_name']
-    message['text'] = request.form['text']
-    message['trigger_word'] = request.form['trigger_word']
+
+    for key, value in request.form.iteritems():
+        message[key] = value
+
     print(message)
     r.connect("localhost", 28015).repl()
     response = r.db("hookdb").table(name).insert(message, conflict ="update").run()
@@ -30,7 +24,7 @@ def slack_log(name, request):
 @app.route('/slack/<name>', methods=['POST'])
 def hook(name):
     slack_log(name, request)
-    return 'success'
+    return
 
 
 @app.after_request
