@@ -23,7 +23,7 @@ def slack_log(name, request):
     message['trigger_word'] = request.form['trigger_word']
 
     print(message)
-    
+
     r.connect("localhost", 28015).repl()
     response = r.db("hookdb").table(name).insert(message, conflict ="update").run()
 
@@ -33,9 +33,10 @@ def slack_log(name, request):
 def hook(name):
     if request.method == 'POST':
             slack_log(name, request)
-            return jsonify({success: True})
     else:
         print('Sorry, {} is not supported by this endpoint'.format(request.method))
+
+    return True
 
 
 @app.after_request
