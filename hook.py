@@ -22,9 +22,11 @@ def slack_log(name, request):
     message['text'] = request.form['text']
     message['trigger_word'] = request.form['trigger_word']
 
+    print(message)
+    
+    r.connect("localhost", 28015).repl()
     response = r.db("hookdb").table(name).insert(message, conflict ="update").run()
 
-    print(request.form['text'])
 
 # Basic hook handler
 @app.route('/slack/<name>', methods=['GET', 'POST'])
@@ -46,5 +48,5 @@ def add_header(response):
     return response
 
 if __name__ == '__main__':
-    r.connect("localhost", 28015).repl()
+    
     app.run(processes=3, host='0.0.0.0')
