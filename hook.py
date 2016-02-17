@@ -30,8 +30,8 @@ def slack_log(name, request):
 def hook(name):
     if request.method == 'POST':
             slack_log(name, request)
-        else:
-            print('Sorry, {} is not supported by this endpoint'.format(request.method))
+    else:
+        print('Sorry, {} is not supported by this endpoint'.format(request.method))
 
 
 @app.after_request
