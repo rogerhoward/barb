@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 def slack_log(name, request):
     print('slack_log {}: {}'.format(name, request))
-    
+
     message = {}
     message['token'] = request.form['token']
     message['team_id'] = request.form['team_id']
@@ -31,6 +31,7 @@ def slack_log(name, request):
 def hook(name):
     if request.method == 'POST':
             slack_log(name, request)
+            return jsonify({success: True})
     else:
         print('Sorry, {} is not supported by this endpoint'.format(request.method))
 
