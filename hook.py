@@ -3,28 +3,34 @@
 import os, sys
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
-
+db_name = 'hookdb'
 app = Flask(__name__)
 
 
 def slack_log(name, request):
     print('slack_log {}: {}'.format(name, request))
-    message = {}
 
+    # Grab every key/value from the POST and stuff it into a dict called message
+    message = {}
     for key, value in request.form.iteritems():
         message[key] = value
 
-    print(message)
-    r.connect("localhost", 28015).repl()
-    response = r.db("hookdb").table(name).insert(message, conflict ="update").run()
-    return True
+    r.connect('localhost', 28015).repl()
+
+    # Create RethinkDB table if it doesn't exist
+    if name not in r.db(db_name).table_list().run():
+        r.db(db_name).table_create(name)
+        r.db(db_name).table(name).index_create('timestamp').index_create('channel_name').run(conn)
+
+    # Insert message into table <name>
+    response = r.db(db_name).table(name).insert(message, conflict ="update").run()
+    return response
 
 
 # Basic hook handler
 @app.route('/slack/<name>', methods=['POST'])
 def hook(name):
-    slack_log(name, request)
-    return
+    return jsonify(slack_log(name, request))
 
 
 @app.after_request
