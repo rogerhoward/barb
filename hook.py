@@ -8,7 +8,8 @@ app = Flask(__name__)
 
 
 def slack_log(name, request):
-
+    print('slack_log {}: {}'.format(name, request))
+    
     message = {}
     message['token'] = request.form['token']
     message['team_id'] = request.form['team_id']
