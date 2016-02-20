@@ -6,4 +6,4 @@ activate_this = os.path.join('/home/rogerhoward/.virtualenvs/hookdb/bin', 'activ
 execfile(activate_this, dict(__file__=activate_this))
 sys.path.append(PROJECT_DIR)
 
-from hookdb import app as application
+from hook import app as application
