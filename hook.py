@@ -39,7 +39,7 @@ def hook(name):
 
 # Basic root handler
 @app.route('/', methods=['GET'])
-def root(name):
+def root():
     return 'sorry, you have reached a URL that is no longer in service'
 
 
