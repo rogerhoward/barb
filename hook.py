@@ -37,6 +37,11 @@ def hook(name):
     if log: print('hook({})'.format(name))
     return jsonify(slack_log(name, request))
 
+# Basic root handler
+@app.route('/', methods=['GET'])
+def root(name):
+    return 'sorry, you have reached a URL that is no longer in service'
+
 
 @app.after_request
 def add_header(response):
