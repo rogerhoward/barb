@@ -7,7 +7,9 @@ import rethinkdb as r
 db_name = 'hookdb'
 app = Flask(__name__)
 log = True
+debug_mode = True
 
+tokens = ['cMj9u7CkpemtLDTmVd0lkyrQ']
 
 def slack_log(name, request):
     if log: print('slack_log {}: {}'.format(name, request))
@@ -59,6 +61,11 @@ def bot():
     message = {}
     for key, value in request.form.iteritems():
         message[key] = value
+
+    # Token check, unless in debugging mode
+
+    if (message['token'] not in tokens) and not debug_mode:
+        abort(500)
 
     encoded_response = '```' + json.dumps(message) + '```'
 
