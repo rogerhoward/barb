@@ -62,9 +62,9 @@ def bot():
 
     encoded_response = '```' + json.dumps(message) + '```'
 
-    if message['trigger_word'].startswith('bot ping'):
+    if message['text'].startswith('bot ping'):
         return jsonify({'text': encoded_response})
-    elif message['trigger_word'].startswith('bot whoami'):
+    elif message['text'].startswith('bot whoami'):
         return jsonify({'text': message['user_name']})
 
 
