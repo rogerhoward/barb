@@ -54,9 +54,9 @@ def hook(name):
 def bot():
     if log: print('bot()')
     user_name = request.form['user_name']
-    text = request.form['text']
+    response = request.form['text']
 
-    return jsonify({'text':'Received from {}'.format(user_name)})
+    return jsonify({'text': response})
 
 
 # Basic root handler
