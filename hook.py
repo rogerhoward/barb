@@ -62,7 +62,10 @@ def bot():
 
     encoded_response = '```' + json.dumps(message) + '```'
 
-    return jsonify({'text': encoded_response})
+    if message['trigger_word'].startswith('bot ping'):
+        return jsonify({'text': encoded_response})
+    elif message['trigger_word'].startswith('bot whoami'):
+        return jsonify({'text': message['user_name']})
 
 
 # Basic root handler
