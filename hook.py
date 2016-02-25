@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import os, sys
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
@@ -53,10 +54,15 @@ def hook(name):
 @app.route('/bot', methods=['POST'])
 def bot():
     if log: print('bot()')
-    user_name = request.form['user_name']
-    response = request.form['text']
 
-    return jsonify({'text': response})
+    # Grab every key/value from the POST and stuff it into a dict
+    message = {}
+    for key, value in request.form.iteritems():
+        message[key] = value
+
+    encoded_response = '```' + json.dumps(message) + '```'
+
+    return jsonify({'text': encoded_response})
 
 
 # Basic root handler
