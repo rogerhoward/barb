@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 
-import json
-import os, sys
+import json, os, sys, utils, config
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
-db_name = 'hookdb'
-app = Flask(__name__)
-log = True
-debug_mode = True
 
-tokens = ['cMj9u7CkpemtLDTmVd0lkyrQ']
+from hookdb import get_plugins
+
+all_modules = get_plugins()
+app = Flask(__name__)
+
+log = True
+debug = True
+tokens = ['']
+db_name = 'hookdb'
+module_directory = 'actions'
 
 def slack_log(name, request):
     if log: print('slack_log {}: {}'.format(name, request))
@@ -18,8 +22,6 @@ def slack_log(name, request):
     message = {}
     for key, value in request.form.iteritems():
         message[key] = value
-
-    r.connect('localhost', 28015).repl()
 
     # Create RethinkDB table if it doesn't exist
     if name not in r.db(db_name).table_list().run():
@@ -35,27 +37,14 @@ def slack_log(name, request):
 
 
 # Basic hook handler
-@app.route('/slack/<name>', methods=['POST'])
+@app.route('/log/<name>', methods=['POST'])
 def hook(name):
     if log: print('hook({})'.format(name))
     return jsonify(slack_log(name, request))
 
-
-# ping handler
-# token=cMj9u7CkpemtLDTmVd0lkyrQ
-# team_id=T0001
-# team_domain=example
-# channel_id=C2147483705
-# channel_name=test
-# timestamp=1355517523.000005
-# user_id=U2147483697
-# user_name=Steve
-# text=googlebot: What is the air-speed velocity of an unladen swallow?
-# trigger_word=googlebot:
-
 @app.route('/bot', methods=['POST'])
 def bot():
-    if log: print('bot()')
+    if log: print('bot listening...')
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
@@ -63,22 +52,31 @@ def bot():
         message[key] = value
 
     # Token check, unless in debugging mode
-
-    if (message['token'] not in tokens) and not debug_mode:
+    if (message['token'] not in tokens) and not debug:
+        if log: print('abort 500: token is not familiar')
         abort(500)
 
-    encoded_response = '```' + json.dumps(message) + '```'
+    # Try each module in order, by calling its consider() method
+    # If trueish, it's a match and the return value is stuffed into
+    # the message property of a dict, JSON encoded and sent home.
+    for this_action in all_modules:
+        result = this_action.consider(message)
+        if result:
+            return jsonify({'message': result})
+        else:
+            pass
 
-    if message['text'].startswith('bot ping'):
-        return jsonify({'text': encoded_response})
-    elif message['text'].startswith('bot whoami'):
-        return jsonify({'text': message['user_name']})
+    # If no match is found, just meh
+    if log: print('abort 509: considered and ignored')
+    abort(509)
 
 
-# Basic root handler
-@app.route('/', methods=['GET'])
+# Basic root handler, because
+@app.route('/')
 def root():
-    return 'sorry, you have reached a URL that is no longer in service'
+    # I'm a teapot
+    if log: print('abort 418: I am a teapot')
+    abort(418)
 
 
 @app.after_request
@@ -91,4 +89,5 @@ def add_header(response):
     return response
 
 if __name__ == '__main__':
-    app.run(processes=3, host='0.0.0.0')
+    r.connect('localhost', 28015).repl()
+    app.run(debug=True, host='0.0.0.0')
