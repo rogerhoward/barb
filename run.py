@@ -1,22 +1,16 @@
 #!/usr/bin/env python
 
-import json, os, sys, utils, config
+import json, os, sys
+import config, utils, plugin_manager
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
 
-from hookdb import get_plugins
-
-all_modules = get_plugins()
+all_modules = plugin_manager.load()
 app = Flask(__name__)
 
-log = True
-debug = True
-tokens = ['']
-db_name = 'hookdb'
-module_directory = 'actions'
 
 def slack_log(name, request):
-    if log: print('slack_log {}: {}'.format(name, request))
+    if config.log: print('slack_log {}: {}'.format(name, request))
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
@@ -24,27 +18,27 @@ def slack_log(name, request):
         message[key] = value
 
     # Create RethinkDB table if it doesn't exist
-    if name not in r.db(db_name).table_list().run():
-        if log: print('table {} does not exist'.format(name))
-        r.db(db_name).table_create(name)
-        r.db(db_name).table(name).index_create('timestamp').run(conn)
-        r.db(db_name).table(name).index_create('channel_name').run(conn)
+    if name not in r.db(config.db_name).table_list().run():
+        if config.log: print('table {} does not exist'.format(name))
+        r.db(config.db_name).table_create(name)
+        r.db(config.db_name).table(name).index_create('timestamp').run(conn)
+        r.db(config.db_name).table(name).index_create('channel_name').run(conn)
 
     # Insert message into table <name>
-    if log: print('Inserting...')
-    response = r.db(db_name).table(name).insert(message).run()
+    if config.log: print('Inserting...')
+    response = r.db(config.db_name).table(name).insert(message).run()
     return response
 
 
 # Basic hook handler
 @app.route('/log/<name>', methods=['POST'])
 def hook(name):
-    if log: print('hook({})'.format(name))
+    if config.log: print('hook({})'.format(name))
     return jsonify(slack_log(name, request))
 
 @app.route('/bot', methods=['POST'])
 def bot():
-    if log: print('bot listening...')
+    if config.log: print('bot listening...')
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
@@ -52,8 +46,8 @@ def bot():
         message[key] = value
 
     # Token check, unless in debugging mode
-    if (message['token'] not in tokens) and not debug:
-        if log: print('abort 500: token is not familiar')
+    if (message['token'] not in config.tokens) and not config.debug:
+        if config.log: print('abort 500: token is not familiar')
         abort(500)
 
     # Try each module in order, by calling its consider() method
@@ -67,7 +61,7 @@ def bot():
             pass
 
     # If no match is found, just meh
-    if log: print('abort 509: considered and ignored')
+    if config.log: print('abort 509: considered and ignored')
     abort(509)
 
 
@@ -75,7 +69,7 @@ def bot():
 @app.route('/')
 def root():
     # I'm a teapot
-    if log: print('abort 418: I am a teapot')
+    if config.log: print('abort 418: I am a teapot')
     abort(418)
 
 
@@ -90,4 +84,4 @@ def add_header(response):
 
 if __name__ == '__main__':
     r.connect('localhost', 28015).repl()
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=config.debug, host='0.0.0.0')

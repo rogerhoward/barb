@@ -1,7 +1,10 @@
+import config
+
 # Digital Ocean instance lists
-def run(message):
+def consider(message):
+    if config.log: print('digitalocean list considered')
     if message['text'].startswith('dolist'):
-        if log: print('digitalocean list triggered')
+        if config.log: print('digitalocean list triggered')
         servers = ['a', 'b', 'c', 'd']
         return ', '.join(servers)
     else:

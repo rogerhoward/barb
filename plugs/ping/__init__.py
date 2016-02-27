@@ -1,3 +1,8 @@
+import config
 # Ping
-def run(message):
-    return message
+def consider(message):
+    if message['text'].startswith('ping'):
+        if config.log: print('ping triggered')
+        return message
+    else:
+        return False

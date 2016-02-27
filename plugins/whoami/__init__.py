@@ -1,7 +1,10 @@
+import config
+
 # Digital Ocean instance lists
-def run(message):
+def consider(message):
+    if config.log: print('whoami considered')
     if message['text'].startswith('whoami'):
-        if log: print('whoami triggered')
+        if config.log: print('whoami triggered')
         return message['user_name']
     else:
         return False
