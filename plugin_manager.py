@@ -17,7 +17,6 @@ def get():
             continue
         info = imp.find_module(main_entry_point, [location])
         plugin_registry.append({"name": i, "info": info})
-    # if config.log: print(plugin_registry)
     return plugin_registry
 
 
@@ -28,14 +27,13 @@ def load():
     """
     modules = []
     for plugin in get():
-        if config.log: print('loading module {}...'.format(plugin['name']))
         modules.append(imp.load_source(plugin['name'], plugin['info'][1]))
     if config.log: print(modules)
     return modules
 
 
-all_plugin_files = get()
-print(all_plugin_files)
+# all_plugin_files = get()
+# print(all_plugin_files)
 
-all_plugins = load()
-print(all_plugins)
+# all_plugins = load()
+# print(all_plugins)

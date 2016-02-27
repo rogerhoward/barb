@@ -87,19 +87,14 @@ def bot():
 # Basic root handler, because
 @app.route('/')
 def root():
+    """Handles the root path
+
+    Return: 418.
+    """
     # I'm a teapot
     if config.log: print('abort 418: I am a teapot')
     abort(418)
 
-
-@app.after_request
-def add_header(response):
-    # Force upstream caches to refresh at 100 minute intervals
-    response.cache_control.max_age = 100
-    # Enable CORS to allow cross-domain loading of tilesets from this server
-    # Especially useful for SeaDragon viewers running locally
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
 
 if __name__ == '__main__':
     r.connect('localhost', 28015).repl()
