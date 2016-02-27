@@ -30,10 +30,3 @@ def load():
         modules.append(imp.load_source(plugin['name'], plugin['info'][1]))
     if config.log: print(modules)
     return modules
-
-
-# all_plugin_files = get()
-# print(all_plugin_files)
-
-# all_plugins = load()
-# print(all_plugins)
