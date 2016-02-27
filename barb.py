@@ -10,6 +10,12 @@ app = Flask(__name__)
 
 
 def slack_log(name, request):
+    """Logs a Slack message object to RethinkDB.
+    Depends on 'import config'
+    Depends on 'import rethinkdb as r'
+
+    Return: True or False.
+    """
     if config.log: print('slack_log {}: {}'.format(name, request))
 
     # Grab every key/value from the POST and stuff it into a dict
@@ -27,12 +33,17 @@ def slack_log(name, request):
     # Insert message into table <name>
     if config.log: print('Inserting...')
     response = r.db(config.db_name).table(name).insert(message).run()
-    return response
+
+    return True
 
 
 # Basic hook handler
 @app.route('/log/<name>', methods=['POST'])
 def hook(name):
+    """Logs a Slack channel message to RethinkDB.
+
+    Return: True or False.
+    """
     if config.log: print('hook({})'.format(name))
     return jsonify(slack_log(name, request))
 
