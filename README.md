@@ -1,4 +1,4 @@
-# Barb
+# 👩 Barb
 
 Barb is a Slack-oriented bot and Webhook process written in Flask. Barb listens for Wehbook messages and makes available several services in response:
 
