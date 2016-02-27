@@ -40,15 +40,23 @@ def slack_log(name, request):
 # Basic hook handler
 @app.route('/log/<name>', methods=['POST'])
 def hook(name):
-    """Logs a Slack channel message to RethinkDB.
+    """Receives a Slack channel message and passes it off to slack_log()
 
-    Return: True or False.
+    Return: True or 500.
     """
     if config.log: print('hook({})'.format(name))
-    return jsonify(slack_log(name, request))
+    if slack_log(name, request):
+        return True
+    else:
+        if config.log: print('hook({}) failed'.format(name))
+        abort(500)
 
 @app.route('/bot', methods=['POST'])
 def bot():
+    """Receives a Slack bot message and tries it with each plugin
+
+    Return: Slack reponse, 500 if auth fails, 509 if no match.
+    """
     if config.log: print('bot listening...')
 
     # Grab every key/value from the POST and stuff it into a dict
