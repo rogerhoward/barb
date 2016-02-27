@@ -35,7 +35,7 @@ def load():
 
 
 all_plugin_files = get()
-print all_plugin_files
+print(all_plugin_files)
 
 all_plugins = load()
-print all_plugins
+print(all_plugins)

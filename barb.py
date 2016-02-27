@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json, os, sys
-import config, utils, plugin_manager
+import config, plugin_manager
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
 
@@ -14,7 +14,7 @@ def slack_log(name, request):
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
-    for key, value in request.form.iteritems():
+    for key, value in request.form.items():
         message[key] = value
 
     # Create RethinkDB table if it doesn't exist
@@ -42,7 +42,7 @@ def bot():
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
-    for key, value in request.form.iteritems():
+    for key, value in request.form.items():
         message[key] = value
 
     # Token check, unless in debugging mode
