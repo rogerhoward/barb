@@ -74,19 +74,19 @@ def log(name):
         if config.log: print('hook({}) failed'.format(name))
         abort(500)
 
-# Channel-specific logging
-@app.route('/log/<name>', methods=['POST'])
-def log(name):
-    """Receives a Slack channel message and passes it off to slack_log()
+# # Channel-specific logging
+# @app.route('/log/<name>', methods=['POST'])
+# def log(name):
+#     """Receives a Slack channel message and passes it off to slack_log()
 
-    Return: True or 500.
-    """
-    if config.log: print('hook({})'.format(name))
-    if slack_log(name, request):
-        return True
-    else:
-        if config.log: print('hook({}) failed'.format(name))
-        abort(500)
+#     Return: True or 500.
+#     """
+#     if config.log: print('hook({})'.format(name))
+#     if slack_log(name, request):
+#         return True
+#     else:
+#         if config.log: print('hook({}) failed'.format(name))
+#         abort(500)
 
 @app.route('/bot', methods=['POST'])
 def bot():
