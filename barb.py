@@ -39,17 +39,18 @@ def slack_log(name, request):
 
 # Basic hook handler
 @app.route('/log/<name>', methods=['POST'])
-def hook(name):
+def log(name):
     """Receives a Slack channel message and passes it off to slack_log()
 
     Return: True or 500.
     """
     if config.log: print('hook({})'.format(name))
     if slack_log(name, request):
-        return True
+        return jsonify({'text': 'logged'})
     else:
         if config.log: print('hook({}) failed'.format(name))
-        abort(500)
+        # abort(500)
+        return jsonify({'text': 'not logged'})
 
 @app.route('/bot', methods=['POST'])
 def bot():
