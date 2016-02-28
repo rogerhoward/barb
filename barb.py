@@ -23,6 +23,9 @@ def slack_log(name, request):
     for key, value in request.form.items():
         message[key] = value
 
+    # Connect to RethinkDB
+    r.connect('localhost', 28015).repl()
+
     # Create RethinkDB table if it doesn't exist
     if name not in r.db(config.db_name).table_list().run():
         if config.log: print('table {} does not exist'.format(name))
@@ -98,5 +101,4 @@ def root():
 
 
 if __name__ == '__main__':
-    r.connect('localhost', 28015).repl()
     app.run(debug=config.debug, host='0.0.0.0')
