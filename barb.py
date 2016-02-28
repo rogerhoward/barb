@@ -103,7 +103,7 @@ def bot():
         result = this_action.consider(message)
         if result:
             if config.log: print('response received: {}'.format(result))
-            return jsonify({'text': result})
+            return jsonify({'text': json.dumps(result)})
         else:
             pass
 
