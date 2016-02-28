@@ -62,7 +62,7 @@ def slack_log(request):
 
 # Channel-specific logging
 @app.route('/log', methods=['POST'])
-def log(name):
+def log():
     """Receives a Slack channel message and passes it off to slack_log()
 
     Return: True or 500.
