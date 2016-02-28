@@ -38,7 +38,7 @@ def slack_log(request):
 
     # Setup logging variables
     db_name = server_name
-    table_name = '{}_{}'.format(server_name, channel_name)
+    table_name = channel_name
 
     # Connect to RethinkDB
     r.connect('localhost', 28015).repl()
