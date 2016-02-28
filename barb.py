@@ -9,38 +9,72 @@ all_modules = plugin_manager.load()
 app = Flask(__name__)
 
 
-def slack_log(name, request):
+def slack_log(request):
     """Logs a Slack message object to RethinkDB.
     Depends on 'import config'
     Depends on 'import rethinkdb as r'
 
     Return: True or False.
     """
-    if config.log: print('slack_log {}: {}'.format(name, request))
+    if config.log: print('slack_log {}: {}'.format(request))
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
     for key, value in request.form.items():
         message[key] = value
 
+    # Set defaults
+    if 'channel_name' in message:
+        channel_name = message['channel_name']
+    else:
+        'unknown_channel'
+
+    if 'team_domain' in message:
+        server_name = message['team_domain']
+    else:
+        'unknown_server'
+
+    # Setup logging variables
+    db_name = server_name
+    table_name = '{}-{}'.format(server_name, channel_name)
+
     # Connect to RethinkDB
     r.connect('localhost', 28015).repl()
 
+    # Create RethinkDB database if it doesn't exist
+    if db_name not in r.db_list().run():
+        if config.log: print('database {} does not exist'.format(db_name))
+        r.db_create(db_name)
+
     # Create RethinkDB table if it doesn't exist
-    if name not in r.db(config.db_name).table_list().run():
-        if config.log: print('table {} does not exist'.format(name))
-        r.db(config.db_name).table_create(name)
-        r.db(config.db_name).table(name).index_create('timestamp').run(conn)
-        r.db(config.db_name).table(name).index_create('channel_name').run(conn)
+    if table_name not in r.db(db_name).table_list().run():
+        if config.log: print('table {} does not exist'.format(table_name))
+        r.db(db_name).table_create(table_name)
+        r.db(db_name).table(table_name).index_create('timestamp').run(conn)
+        r.db(db_name).table(table_name).index_create('channel_name').run(conn)
 
     # Insert message into table <name>
     if config.log: print('Inserting...')
-    response = r.db(config.db_name).table(name).insert(message).run()
+    response = r.db(db_name).table(table_name).insert(message).run()
 
     return True
 
 
-# Basic hook handler
+# Channel-specific logging
+@app.route('/log', methods=['POST'])
+def log(name):
+    """Receives a Slack channel message and passes it off to slack_log()
+
+    Return: True or 500.
+    """
+    if config.log: print('hook({})'.format(name))
+    if slack_log(name, request):
+        return True
+    else:
+        if config.log: print('hook({}) failed'.format(name))
+        abort(500)
+
+# Channel-specific logging
 @app.route('/log/<name>', methods=['POST'])
 def log(name):
     """Receives a Slack channel message and passes it off to slack_log()
@@ -49,11 +83,10 @@ def log(name):
     """
     if config.log: print('hook({})'.format(name))
     if slack_log(name, request):
-        return jsonify({'text': 'logged'})
+        return True
     else:
         if config.log: print('hook({}) failed'.format(name))
-        # abort(500)
-        return jsonify({'text': 'not logged'})
+        abort(500)
 
 @app.route('/bot', methods=['POST'])
 def bot():
