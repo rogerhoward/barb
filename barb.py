@@ -115,7 +115,7 @@ def bot():
     for this_action in all_modules:
         result = this_action.consider(message)
         if result:
-            return jsonify({'message': result})
+            return jsonify({'text': result})
         else:
             pass
 
