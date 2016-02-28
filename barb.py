@@ -26,17 +26,19 @@ def slack_log(request):
     # Set defaults
     if 'channel_name' in message:
         channel_name = message['channel_name']
+        channel_name = ''.join(e for e in channel_name if e.isalnum())
     else:
-        'unknown_channel'
+        'unknown'
 
     if 'team_domain' in message:
         server_name = message['team_domain']
+        server_name = ''.join(e for e in server_name if e.isalnum())
     else:
-        'unknown_server'
+        'unknown'
 
     # Setup logging variables
     db_name = server_name
-    table_name = '{}-{}'.format(server_name, channel_name)
+    table_name = '{}_{}'.format(server_name, channel_name)
 
     # Connect to RethinkDB
     r.connect('localhost', 28015).repl()
