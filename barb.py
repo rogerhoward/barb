@@ -16,7 +16,7 @@ def slack_log(request):
 
     Return: True or False.
     """
-    if config.log: print('slack_log {}: {}'.format(request))
+    if config.log: print('slack_log: {}'.format(request))
 
     # Grab every key/value from the POST and stuff it into a dict
     message = {}
