@@ -51,7 +51,7 @@ def slack_log(request):
     # Create RethinkDB table if it doesn't exist
     if table_name not in r.db(db_name).table_list().run():
         if config.log: print('table {} does not exist'.format(table_name))
-        r.db(db_name).table_create(table_name)
+        r.db(db_name).table_create(table_name).run()
         r.db(db_name).table(table_name).index_create('timestamp').run()
         r.db(db_name).table(table_name).index_create('channel_name').run()
 
