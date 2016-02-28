@@ -75,7 +75,7 @@ def log():
     else:
         if config.log: print('log() failed')
         abort(500)
-        
+
 
 @app.route('/bot', methods=['POST'])
 def bot():
@@ -102,6 +102,7 @@ def bot():
     for this_action in all_modules:
         result = this_action.consider(message)
         if result:
+            if config.log: print('response received: {}'.format(result))
             return jsonify({'text': result})
         else:
             pass
