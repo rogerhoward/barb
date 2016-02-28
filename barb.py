@@ -71,7 +71,7 @@ def log():
     """
     if config.log: print('log()')
     if slack_log(request):
-        return True
+        return jsonify({'text':'logged'})
     else:
         if config.log: print('log() failed')
         abort(500)
