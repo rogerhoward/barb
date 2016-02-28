@@ -102,6 +102,7 @@ def bot():
     message = {}
     for key, value in request.form.items():
         message[key] = value
+    if config.log: print(message)
 
     # Token check, unless in debugging mode
     if (message['token'] not in config.tokens) and not config.debug:
