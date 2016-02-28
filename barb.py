@@ -44,7 +44,7 @@ def slack_log(request):
     # Create RethinkDB database if it doesn't exist
     if db_name not in r.db_list().run():
         if config.log: print('database {} does not exist'.format(db_name))
-        r.db_create(db_name)
+        r.db_create(db_name).run(conn)
 
     # Create RethinkDB table if it doesn't exist
     if table_name not in r.db(db_name).table_list().run():
