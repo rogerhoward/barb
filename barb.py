@@ -67,11 +67,11 @@ def log():
 
     Return: True or 500.
     """
-    if config.log: print('hook({})'.format(name))
-    if slack_log(name, request):
+    if config.log: print('log()')
+    if slack_log(request):
         return True
     else:
-        if config.log: print('hook({}) failed'.format(name))
+        if config.log: print('log() failed')
         abort(500)
 
 # # Channel-specific logging
