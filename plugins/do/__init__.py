@@ -2,6 +2,10 @@ import config, digitalocean
 
 # Digital Ocean instance lists
 def consider(message):
+    """Lists all DigitalOcean droplets.
+
+    Return: Array of droplet names, or False.
+    """
     if config.log: print('digitalocean list considered')
 
     possible_trigger = '{} droplets'.format(message['trigger_word'])

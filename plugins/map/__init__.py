@@ -1,16 +1,12 @@
 import config
 
-# # Ping
-# def consider(message):
-#     if config.log: print('ping considered')
-#     if message['text'].endswith('ping'):
-#         if config.log: print('ping triggered')
-#         return 'pong'
-#     else:
-#         return False
 
 # Ping
 def consider(message):
+    """Map: returns a Google Map link to the specified location.
+
+    Return: URL to a Google Map, or False.
+    """
     if config.log: print('map considered')
     possible_trigger = '{} map '.format(message['trigger_word'])
     if message['text'].startswith(possible_trigger):

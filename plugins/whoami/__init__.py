@@ -2,6 +2,10 @@ import config
 
 # Digital Ocean instance lists
 def consider(message):
+    """Whoami: returns the askers username.
+
+    Return: String containing a username, or False.
+    """
     if config.log: print('whoami considered')
     if 'whoami' in message['text']:
         if config.log: print('whoami triggered')
