@@ -4,7 +4,7 @@ import config, digitalocean
 def consider(message):
     if config.log: print('digitalocean list considered')
 
-    possible_trigger = '{} droplets '.format(message['trigger_word'])
+    possible_trigger = '{} droplets'.format(message['trigger_word'])
     if message['text'].startswith(possible_trigger):
         if config.log: print('digitalocean list triggered')
 
