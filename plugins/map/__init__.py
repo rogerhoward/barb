@@ -1,7 +1,7 @@
 import config
 
 
-# Ping
+# Google Maps
 def consider(message):
     """Map: returns a Google Map link to the specified location.
 

@@ -1,7 +1,7 @@
 import config
 import git 
 
-# Digital Ocean instance lists
+# Git commands
 def consider(message):
     """Git: attempts to git pull the current project.
 

@@ -1,5 +1,6 @@
 import config
 
+
 # Ping
 def consider(message):
     """Ping: returns the entire payload Slack sends to it.

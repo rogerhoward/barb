@@ -1,6 +1,7 @@
 import config
 
-# Digital Ocean instance lists
+
+# Whoami plugin
 def consider(message):
     """Whoami: returns the askers username.
 
