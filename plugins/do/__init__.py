@@ -1,11 +1,18 @@
-import config
+import config, digitalocean
 
 # Digital Ocean instance lists
 def consider(message):
     if config.log: print('digitalocean list considered')
-    if 'dolist' in message['text']:
+
+    possible_trigger = '{} droplets '.format(message['trigger_word'])
+    if message['text'].startswith(possible_trigger):
         if config.log: print('digitalocean list triggered')
-        servers = ['a', 'b', 'c', 'd']
+
+        manager = digitalocean.Manager(token=config.secrets['do_secret'])
+        servers = []
+        for this_droplet in manager.get_all_droplets():
+             servers.append(this_droplet.name)
+
         return ', '.join(servers)
     else:
         return False
