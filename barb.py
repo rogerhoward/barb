@@ -79,9 +79,16 @@ def log():
 
 @app.route('/bot', methods=['POST'])
 def bot_handler():
-    """Receives a Slack bot message and tries it with each plugin
+    """Receives a Slack bot message and tries it with each plugin.
+    request: the Flask request object, including the the form-encoded
+             message fields Slack POSTs.
 
-    Return: Slack reponse, 500 if auth fails, 509 if no match.
+    Args:
+        request (object): the Flask request object, including the the form-
+             encoded message fields which Slack POSTs
+
+    Returns:
+        bool: JSON-encoded result object if successful, 500 if auth fails, 509 if no match.
     """
     response = bot.listen(request)
 
@@ -104,4 +111,4 @@ def root():
 
 
 if __name__ == '__main__':
-    app.run(debug=config.debug, host='0.0.0.0')
+    app.run(debug=config.debug, host='0.0.0.0', port=5000)
