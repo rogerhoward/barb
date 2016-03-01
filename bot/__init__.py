@@ -6,8 +6,6 @@ all_modules = plugin_manager.load()
 
 def listen(request):
     """Processes Slack bot messages.
-    request: the Flask request object, including the the form-encoded
-             message fields Slack POSTs.
 
     Args:
         request (object): the Flask request object, including the the form-
