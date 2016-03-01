@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import json, os, sys
+import json, os, sys, bot
 import config, plugin_manager
 from flask import Flask, Response, send_file, jsonify, abort, request
 import rethinkdb as r
@@ -78,38 +78,17 @@ def log():
 
 
 @app.route('/bot', methods=['POST'])
-def bot():
+def bot_handler():
     """Receives a Slack bot message and tries it with each plugin
 
     Return: Slack reponse, 500 if auth fails, 509 if no match.
     """
-    if config.log: print('bot listening...')
+    response = bot.listen(request)
 
-    # Grab every key/value from the POST and stuff it into a dict
-    message = {}
-    for key, value in request.form.items():
-        message[key] = value
-    print(message)
-
-    # Token check, unless in debugging mode
-    if (message['token'] not in config.tokens) and not config.debug:
-        if config.log: print('abort 500: token is not familiar')
-        abort(500)
-
-    # Try each module in order, by calling its consider() method
-    # If trueish, it's a match and the return value is stuffed into
-    # the message property of a dict, JSON encoded and sent home.
-    for this_action in all_modules:
-        result = this_action.consider(message)
-        if result:
-            if config.log: print('response received: {}'.format(result))
-            return jsonify({'text': json.dumps(result)})
-        else:
-            pass
-
-    # If no match is found, just meh
-    if config.log: print('abort 509: considered and ignored')
-    abort(509)
+    if response:
+        return jsonify({'text': json.dumps(response)})
+    else:
+        abort(509)
 
 
 # Basic root handler, because
