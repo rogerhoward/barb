@@ -9,18 +9,6 @@ import rethinkdb as r
 app = Flask(__name__)
 
 
-def slack_log(request):
-    """Logs a Slack message object to RethinkDB.
-    Depends on 'import config'
-    Depends on 'import rethinkdb as r'
-
-    Return: True or False.
-    """
-    if config.log: print('slack_log: {}'.format(request))
-    logger.save(request)
-    return True
-
-
 # Channel-specific logging
 @app.route('/log', methods=['POST'])
 def log():
@@ -34,7 +22,7 @@ def log():
         bool: True, or HTTP 500.
     """
     if config.log: print('log()')
-    if slack_log(request):
+    if logger.save(request):
         return jsonify({'text':''})
     else:
         if config.log: print('log() failed')
@@ -44,8 +32,6 @@ def log():
 @app.route('/bot', methods=['POST'])
 def bot_handler():
     """Receives a Slack bot message and tries it with each plugin.
-    request: the Flask request object, including the the form-encoded
-             message fields Slack POSTs.
 
     Args:
         request (object): the Flask request object, including the the form-
