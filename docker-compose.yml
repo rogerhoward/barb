@@ -19,9 +19,3 @@ nginx:
     - web
   links:
     - web:web
-
-data:
-  image: postgres:latest
-  volumes:
-    - /var/lib/postgresql
-  command: "true"
