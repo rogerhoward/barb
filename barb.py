@@ -67,7 +67,12 @@ def slack_log(request):
 def log():
     """Receives a Slack channel message and passes it off to slack_log()
 
-    Return: True or 500.
+    Args:
+        request (object): the Flask request object, including the the form-
+             encoded message fields which Slack POSTs
+
+    Returns:
+        bool: True, or HTTP 500.
     """
     if config.log: print('log()')
     if slack_log(request):
@@ -103,7 +108,8 @@ def bot_handler():
 def root():
     """Handles the root path
 
-    Return: 418.
+    Returns:
+        HTTP 418: I am a teapot.
     """
     # I'm a teapot
     if config.log: print('abort 418: I am a teapot')
