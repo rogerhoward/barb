@@ -3,8 +3,6 @@ web:
   build: ./web
   expose:
     - "8000"
-  links:
-    - postgres:postgres
   volumes:
     - /usr/src/app/static
   env_file: .env
@@ -27,11 +25,3 @@ data:
   volumes:
     - /var/lib/postgresql
   command: "true"
-
-postgres:
-  restart: always
-  image: postgres:latest
-  volumes_from:
-    - data
-  ports:
-    - "5432:5432"
