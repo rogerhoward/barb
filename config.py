@@ -19,6 +19,6 @@ db_name = 'hookdb'
 log = True
 debug = True
 
-secret_path = os.path.join(os.path.dirname(os.path.dirname(project_directory)), 'secrets.json')
+secret_path = os.path.join(os.path.dirname(project_directory), 'secrets.json')
 with open(secret_path) as secret_file:    
     secrets = json.load(secret_file)

@@ -6,16 +6,16 @@ web:
   volumes:
     - /usr/src/app/static
   env_file: .env
-  command: /usr/local/bin/gunicorn -w 2 -b :8000 app:app
+  command: /Users/rogerhoward/.virtualenvs/barb/bin/gunicorn -w 2 -b :8000 barb:app
 
-nginx:
-  restart: always
-  build: ./nginx/
-  ports:
-    - "80:80"
-  volumes:
-    - /www/static
-  volumes_from:
-    - web
-  links:
-    - web:web
+# nginx:
+#   restart: always
+#   build: ./nginx/
+#   ports:
+#     - "80:80"
+#   volumes:
+#     - /www/static
+#   volumes_from:
+#     - web
+#   links:
+#     - web:web
