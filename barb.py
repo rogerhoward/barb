@@ -25,6 +25,7 @@ def deploy():
     if config.log: print('deploy()')
     g = git.cmd.Git(config.project_directory)
     g.pull()
+    if config.log: print('deploy() - successfully pulled')
     return jsonify({'text':'deployed'})
 
 # Channel-specific logging
