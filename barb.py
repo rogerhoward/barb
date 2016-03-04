@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import json, os, sys
+import json, os, sys, git
 import bot, logger
 import config
 from flask import Flask, Response, send_file, jsonify, abort, request
@@ -8,6 +8,24 @@ import rethinkdb as r
 
 app = Flask(__name__)
 
+
+# Channel-specific logging
+@app.route('/deploy', methods=['POST'])
+def deploy():
+    """Receives Github hooks and deploys if a merge to master
+
+    Args:
+        request (object): the Flask request object, including the the form-
+             encoded message fields which Slack POSTs
+
+    Returns:
+        bool: True, or HTTP 500.
+    """
+
+    if config.log: print('deploy()')
+    g = git.cmd.Git(config.project_directory)
+    g.pull()
+    return jsonify({'text':'deployed'})
 
 # Channel-specific logging
 @app.route('/log', methods=['POST'])
