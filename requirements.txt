@@ -1,9 +1,14 @@
 Flask==0.10.1
+GitPython==1.0.2
 Jinja2==2.8
 MarkupSafe==0.23
 Werkzeug==0.11.4
+gitdb==0.6.4
+gunicorn==19.4.5
 itsdangerous==0.24
+python-digitalocean==1.8
 requests==2.9.1
 rethinkdb==2.2.0.post5
+smmap==0.9.0
 virtualenv==1.11.6
 virtualenvwrapper==4.3
